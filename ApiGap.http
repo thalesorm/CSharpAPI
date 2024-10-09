@@ -1,0 +1,6 @@
+@api_gap_HostAddress = http://localhost:5163
+
+GET {{api_gap_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
