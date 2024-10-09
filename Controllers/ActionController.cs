@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ActionModel = ApiGap.Models.Action;
 
 namespace ApiGap.Controllers
 {
@@ -8,7 +9,7 @@ namespace ApiGap.Controllers
     public class ActionController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<List<Action>> GetAllAction()
+        public ActionResult<List<ActionModel>> GetAllAction()
         {
             return Ok();
         }

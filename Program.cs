@@ -1,4 +1,6 @@
 
+using ApiGap.Interfaces;
+using ApiGap.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiGap
@@ -21,6 +23,8 @@ namespace ApiGap
 
             builder.Services.AddDbContext<DbContext>(options =>
                 options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 
