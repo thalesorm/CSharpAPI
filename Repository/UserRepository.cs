@@ -33,28 +33,10 @@ namespace ApiGap.Repository
 
         public async Task<UserModel> Update(UserModel user, string id)
         {
-            UserModel? userToUpdate = await GetById(id);
-
-            if (userToUpdate == null)
-            {
-                throw new Exception($"User with {id} not found");
-            }
-
-            userToUpdate.Name = user.Name;
-            userToUpdate.Job = user.Job;
-            userToUpdate.Email = user.Email;
-            userToUpdate.Password = user.Password;
-            userToUpdate.Avatar = user.Avatar;
-            userToUpdate.Status = user.Status;
-            userToUpdate.Role = user.Role;
-            userToUpdate.IdUnity = user.IdUnity;
-            userToUpdate.CreatedAt = user.CreatedAt;
-            userToUpdate.UpdatedAt = user.UpdatedAt;
-
-            _dbContext.Update(userToUpdate);
+            await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
-            return userToUpdate;
+            return user;
         }
 
         public async Task<bool> Delete(string id)
@@ -63,7 +45,7 @@ namespace ApiGap.Repository
 
             if (userToUpdate == null)
             {
-                throw new Exception($"User with {id} not found");
+                return false;
             }
 
             _dbContext.Users.Remove(userToUpdate);
