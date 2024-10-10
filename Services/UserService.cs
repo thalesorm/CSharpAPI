@@ -1,16 +1,17 @@
 ﻿using ApiGap.Repository;
-using Microsoft.AspNetCore.Http.HttpResults;
+using ApiGap.Repository.Interfaces;
+using ApiGap.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using UserModel = ApiGap.Models.User;
 
 namespace ApiGap.Services
 
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public UserService(UserRepository userRepository)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

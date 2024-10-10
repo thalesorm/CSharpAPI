@@ -1,5 +1,5 @@
 ﻿using ApiGap.Data;
-using ApiGap.Interfaces;
+using ApiGap.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using UserModel = ApiGap.Models.User;
 
@@ -7,8 +7,8 @@ namespace ApiGap.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly GapApiDBContext _dbContext;
-        public UserRepository(GapApiDBContext gapApiDBContext)
+        private readonly ApiGapDBContext _dbContext;
+        public UserRepository(ApiGapDBContext gapApiDBContext)
         {
             _dbContext = gapApiDBContext;
         }
@@ -25,6 +25,8 @@ namespace ApiGap.Repository
 
         public async Task<UserModel> Create(UserModel user)
         {
+            user.CreatedAt = DateTime.Now;
+            user.UpdatedAt = DateTime.Now;
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
@@ -33,7 +35,7 @@ namespace ApiGap.Repository
 
         public async Task<UserModel> Update(UserModel user, string id)
         {
-            await _dbContext.Users.AddAsync(user);
+            _dbContext.Users.Update(user);
             await _dbContext.SaveChangesAsync();
 
             return user;

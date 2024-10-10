@@ -5,7 +5,7 @@ namespace ApiGap.Models;
 
 public partial class User
 {
-    public string Id { get; set; } = null!;
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string Name { get; set; } = null!;
 
