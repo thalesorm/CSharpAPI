@@ -26,12 +26,12 @@ public partial class User
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }
-
+    
     public virtual ICollection<Actioncollaborator> Actioncollaborators { get; set; } = new List<Actioncollaborator>();
 
     public virtual ICollection<Collaborator> Collaborators { get; set; } = new List<Collaborator>();
 
-    public virtual Unity IdUnityNavigation { get; set; } = null!;
+    public virtual Unity? IdUnityNavigation { get; set; } = null!;
 
     public virtual ICollection<Login> Logins { get; set; } = new List<Login>();
 

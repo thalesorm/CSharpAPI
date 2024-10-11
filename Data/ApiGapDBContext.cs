@@ -574,7 +574,7 @@ namespace ApiGap.Data
                 entity.HasKey(e => e.Id).HasName("PRIMARY");
 
                 entity
-                    .ToTable("unity")
+                    .ToTable("Unity")
                     .UseCollation("utf8mb4_unicode_ci");
 
                 entity.Property(e => e.Id)
@@ -600,7 +600,7 @@ namespace ApiGap.Data
                 entity.HasKey(e => e.Id).HasName("PRIMARY");
 
                 entity
-                    .ToTable("user")
+                    .ToTable("User")
                     .UseCollation("utf8mb4_unicode_ci");
 
                 entity.HasIndex(e => e.Email, "User_email_key").IsUnique();

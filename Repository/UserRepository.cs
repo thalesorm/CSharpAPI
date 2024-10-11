@@ -14,7 +14,14 @@ namespace ApiGap.Repository
         }
         public async Task<List<UserModel>> GetAllUsers()
         {
-            return  await _dbContext.Users.ToListAsync();
+            try
+            {
+                return  await _dbContext.Users.AsNoTracking().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public async Task<UserModel?> GetById(string id)
@@ -25,10 +32,17 @@ namespace ApiGap.Repository
 
         public async Task<UserModel> Create(UserModel user)
         {
+            try
+            {
             user.CreatedAt = DateTime.Now;
             user.UpdatedAt = DateTime.Now;
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                return new UserModel();
+            }
 
             return user;
         }

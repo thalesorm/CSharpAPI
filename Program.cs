@@ -26,7 +26,7 @@ namespace ApiGap
             var connectionString = builder.Configuration.GetConnectionString("Database");
 
             builder.Services.AddEntityFrameworkMySql().AddDbContext<ApiGapDBContext>(options =>
-                options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
+                options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 31))));
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
