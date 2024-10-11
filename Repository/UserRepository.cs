@@ -56,5 +56,11 @@ namespace ApiGap.Repository
             return true;
         }
 
+        // arrumar forma melhor de fazer isso separando os arquvos
+        public async Task<UserModel?> GetByEmail(string email)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
     }
 }

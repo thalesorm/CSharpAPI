@@ -6,6 +6,20 @@ using ApiGap.Services.Interfaces;
 
 namespace ApiGap.Controllers
 {
+
+    public class UserDto
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Name { get; set; } = null!;
+        public string Job { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string? Avatar { get; set; }
+        public string Status { get; set; } = null!;
+        public string Role { get; set; } = null!;
+        public string IdUnity { get; set; } = null!; // Certifique-se de que isso está sendo preenchido
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -46,17 +60,30 @@ namespace ApiGap.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] UserModel user)
+        public async Task<IActionResult> CreateUser(UserDto userDto)
         {
-            try
+            if (string.IsNullOrEmpty(userDto.IdUnity))
             {
-                var createdUser = await _userService.Create(user);
-                return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser);
+                return BadRequest("IdUnity é obrigatório.");
             }
-            catch (Exception ex)
+
+            var user = new UserModel
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
+                Id = Guid.NewGuid().ToString(),
+                Name = userDto.Name,
+                Job = userDto.Job,
+                Email = userDto.Email,
+                Password = userDto.Password,
+                Avatar = userDto.Avatar,
+                Status = userDto.Status,
+                Role = userDto.Role,
+                IdUnity = userDto.IdUnity,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var createdUser = await _userService.Create(user);
+            return CreatedAtAction(nameof(GetById), new { id = createdUser.Id }, createdUser);
         }
 
         [HttpPut("{id}")]

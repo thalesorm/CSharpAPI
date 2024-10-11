@@ -45,7 +45,8 @@ namespace ApiGap.Services
 
             if (!isValid)
             {
-                throw new Exception("Usuário inválido.");
+                var errors = string.Join(", ", validationResults.Select(r => r.ErrorMessage));
+                throw new ValidationException("Usuário inválido: {errors}");
             }
 
             return await _userRepository.Create(user);
@@ -59,7 +60,17 @@ namespace ApiGap.Services
                 throw new Exception($"Usuário com ID {id} não encontrado. Não é possível atualizar.");
             }
 
-            return await _userRepository.Update(user, id);
+            existingUser.Name = user.Name;
+            existingUser.Job = user.Job;
+            existingUser.Email = user.Email;
+            existingUser.Password = user.Password;
+            existingUser.Avatar = user.Avatar;
+            existingUser.Status = user.Status;
+            existingUser.Role = user.Role;
+            existingUser.IdUnity = user.IdUnity;
+            existingUser.UpdatedAt = DateTime.UtcNow;
+
+            return await _userRepository.Update(existingUser, id);
         }
 
         public async Task<bool> Delete(string id)

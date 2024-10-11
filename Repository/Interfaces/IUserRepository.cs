@@ -9,5 +9,7 @@ namespace ApiGap.Repository.Interfaces
         Task<UserModel> Create(UserModel user);
         Task<UserModel> Update(UserModel user, string id);
         Task<bool> Delete(string id);
+
+        Task<UserModel?> GetByEmail(string email); // procurar uma forma melhor de fazer isso ou separar o arquivo
     }
 }
