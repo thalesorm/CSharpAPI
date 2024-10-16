@@ -9,12 +9,12 @@ using BCrypt.Net;
 
 namespace ApiGap.Services
 {
-    public class AuthService : IAuthService
+    public class AccountService : IAccountService
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
-        public AuthService(IUserRepository userRepository, IConfiguration configuration)
+        public AccountService(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _configuration = configuration;
@@ -31,14 +31,21 @@ namespace ApiGap.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+
+            // Cria a lista de claims
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            // Adiciona o claim com o papel do usuário
+            claims.Add(new Claim(ClaimTypes.Role, user.Role)); // Presume que `user.Role` retorna "Administrador", "Gerente", "Colaborador", ou "Usuário Padrão"
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.Email, user.Email)
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(3),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
 

@@ -31,13 +31,15 @@ namespace ApiGap
             builder.Services.AddEntityFrameworkMySql().AddDbContext<ApiGapDBContext>(options =>
                 options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21))));
 
+            builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
-
             //jwt
-            var secretKey = "2c194c7218d4fa287de199aa963133009b782e70cd3874400b7b0a671dcccd4872b4c444bca2862922790d9af3c024d5cae2d2cdcb76a278181e0c22cfdca21d";
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            var secretKey = jwtSettings["Key"];
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
             var key = Encoding.ASCII.GetBytes(secretKey);
 
             builder.Services.AddAuthentication(x =>
@@ -47,16 +49,38 @@ namespace ApiGap
             })
             .AddJwtBearer(x =>
             {
-                x.RequireHttpsMetadata = false; // Mude para true em produção
+                x.RequireHttpsMetadata = false; // se um dia eu colocar isso em prod, mudar para true
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+                    ValidateLifetime = true, // Verifica se o token ainda é válido
+                    ClockSkew = TimeSpan.Zero // Evita tolerância padrão de 5 minutos
                 };
             });
+
+            // aqui são as politicas (policy) de autorização
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole", policy =>
+                    policy.RequireRole("COLLABORATOR")); // Permite apenas administradores - lembrar de mudar para "ADMINISTRATOR"
+
+                options.AddPolicy("RequireManagerRole", policy =>
+                    policy.RequireRole("Gerente")); // Permite apenas gerentes
+
+                options.AddPolicy("RequireCollaboratorRole", policy =>
+                    policy.RequireRole("Colaborador")); // Permite apenas colaboradores
+
+                options.AddPolicy("RequireStandardUserRole", policy =>
+                    policy.RequireRole("Usuário Padrão")); // Permite apenas usuários padrão
+            });
+
+
 
             var app = builder.Build();
 
@@ -70,9 +94,9 @@ namespace ApiGap
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication(); // aqui é da autenticação
+            app.UseAuthentication(); // aqui é o Middleware  da autenticação
 
-            app.UseAuthorization();
+            app.UseAuthorization(); // aqui é o Middleware da autorização
 
 
             app.MapControllers();

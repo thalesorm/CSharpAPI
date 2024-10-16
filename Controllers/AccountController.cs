@@ -6,11 +6,11 @@ namespace ApiGap.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AccountController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IAccountService _authService;
 
-        public AuthController(IAuthService authService)
+        public AccountController(IAccountService authService)
         {
             _authService = authService;
         }

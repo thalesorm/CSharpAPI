@@ -1,6 +1,6 @@
 ﻿namespace ApiGap.Services.Interfaces
 {
-    public interface IAuthService
+    public interface IAccountService
     {
         Task<string> Login(string email, string password);
     }

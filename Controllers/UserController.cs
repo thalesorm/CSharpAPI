@@ -3,6 +3,7 @@ using UserModel = ApiGap.Models.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ApiGap.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiGap.Controllers
 {
@@ -17,11 +18,12 @@ namespace ApiGap.Controllers
         public string? Avatar { get; set; }
         public string Status { get; set; } = null!;
         public string Role { get; set; } = null!;
-        public string IdUnity { get; set; } = null!; // Certifique-se de que isso está sendo preenchido
+        public string IdUnity { get; set; } = null!;
     }
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "COLLABORATOR")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
